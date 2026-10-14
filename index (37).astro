@@ -1,0 +1,293 @@
+---
+import Base from '../layouts/Base.astro';
+import ToolCard from '../components/ToolCard.astro';
+import { tools, getTool } from '../lib/registry';
+import { homeFaqs, useCases, guides } from '../data/site';
+import type { ToolDefinition } from '../lib/types';
+
+const description =
+  'Clean messy text and data without uploading it. Free browser tools to dedupe lists, fix case, strip hidden characters and more — no signup, no limits.';
+
+const problems = [
+  {
+    heading: 'Duplicates everywhere',
+    body: 'Lists exported from three tools, emails pasted twice, log lines on repeat. Dedupe them with rules you choose — case, spacing, punctuation.',
+    href: '/tools/remove-duplicate-lines/',
+    cta: 'Remove duplicate lines',
+  },
+  {
+    heading: 'Invisible junk',
+    body: 'Zero-width spaces from PDFs and non-breaking spaces from web pages make identical strings refuse to match. See them named and remove them.',
+    href: '/tools/remove-invisible-characters/',
+    cta: 'Remove invisible characters',
+  },
+  {
+    heading: 'Wrong capitalisation',
+    body: 'Shouting ALL CAPS names, sentence-cased headlines, variables in the wrong style — fix a whole list in one pass instead of retyping it.',
+    href: '/tools/case-converter/',
+    cta: 'Open the case converter',
+  },
+];
+
+const steps = [
+  {
+    heading: 'Paste',
+    body: 'Drop your text into the tool. No file upload, no account, no “choose a plan” screen.',
+  },
+  {
+    heading: 'Clean',
+    body: 'Options update the output live. The counter tells you exactly what changed.',
+  },
+  {
+    heading: 'Copy',
+    body: 'Copy or download the result. Your original stays untouched, so you can re-run with different settings.',
+  },
+];
+
+const defaultTool = getTool('remove-duplicate-lines') as ToolDefinition;
+---
+
+<Base
+  title="ScrubKit — Clean Messy Text & Data in Your Browser (No Upload)"
+  description={description}
+>
+  <!-- Hero -->
+  <section class="hero-grid bg-deep text-paper">
+    <div class="container-page grid items-center gap-12 py-16 sm:py-24 lg:grid-cols-2">
+      <div>
+        <span class="eyebrow text-signal">
+          <span aria-hidden="true">●</span> Privacy-first text toolkit
+        </span>
+        <h1 class="mt-5 text-4xl font-extrabold leading-[1.05] sm:text-6xl">
+          Clean messy text and data —
+          <mark>without uploading it anywhere</mark>
+        </h1>
+        <p class="mt-5 max-w-xl text-lg leading-relaxed text-paper/75">
+          Dedupe lists, fix capitalisation, strip invisible characters, replace
+          text and more. Everything runs inside your browser: no server ever
+          sees what you paste.
+        </p>
+        <div class="mt-6 flex flex-wrap gap-2">
+          <span class="chip chip-dark">No upload</span>
+          <span class="chip chip-dark">No signup</span>
+          <span class="chip chip-dark">No limits</span>
+        </div>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="/tools/remove-duplicate-lines/" class="btn btn-signal">
+            Open Remove Duplicate Lines
+          </a>
+          <a href="#tools" class="btn btn-dark-ghost">Browse all 10 tools</a>
+        </div>
+      </div>
+
+      <!-- Live demo -->
+      <div class="card p-4 sm:p-5" data-demo-root>
+        <div class="flex items-center justify-between gap-3">
+          <span class="field-label mb-0">Try it — duplicates in, clean list out</span>
+          <span id="demo-status" class="text-xs font-semibold text-mint" role="status" aria-live="polite"></span>
+        </div>
+        <textarea
+          id="demo-input"
+          class="text-area mt-2 min-h-40"
+          spellcheck="false"
+          aria-label="Demo input">ada@example.com
+grace@example.com
+ada@example.com
+  ada@example.com
+linus@example.com
+GRACE@example.com</textarea>
+        <p class="field-label mt-4">Clean output</p>
+        <pre
+          id="demo-output"
+          class="max-h-40 overflow-auto rounded-lg border border-line bg-paper-2 p-3 font-mono text-xs leading-relaxed"></pre>
+        <a href="/tools/remove-duplicate-lines/" class="btn btn-primary mt-4 w-full">
+          Use this tool on your own text →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Problems -->
+  <section class="container-page py-16 sm:py-20">
+    <div class="max-w-2xl">
+      <span class="eyebrow text-ink-3">The everyday mess</span>
+      <h2 class="mt-3 text-3xl font-extrabold sm:text-4xl">
+        You have text to clean — not a signup to fill in.
+      </h2>
+      <p class="mt-3 text-ink-2">
+        Most “free” tools want an upload, an account and three interstitials
+        before they do anything. ScrubKit does the job in one screen.
+      </p>
+    </div>
+    <div class="mt-10 grid gap-6 md:grid-cols-3">
+      {
+        problems.map((problem) => (
+          <div class="card p-6">
+            <h3 class="text-lg font-bold">{problem.heading}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-ink-2">{problem.body}</p>
+            <a
+              href={problem.href}
+              class="mt-4 inline-flex items-center gap-1 text-sm font-semibold underline decoration-signal-2 decoration-2 underline-offset-4"
+            >
+              {problem.cta} <span aria-hidden="true">→</span>
+            </a>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- Tools -->
+  <section id="tools" class="border-y border-line bg-paper-2 py-16 sm:py-20">
+    <div class="container-page">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <div class="max-w-2xl">
+          <span class="eyebrow text-ink-3">The toolkit</span>
+          <h2 class="mt-3 text-3xl font-extrabold sm:text-4xl">Ten tools, one promise</h2>
+          <p class="mt-3 text-ink-2">
+            Each tool is a focused page that works the moment it loads — paste,
+            adjust, copy. Pick the problem you have right now.
+          </p>
+        </div>
+        <a href="/categories/cleaning/" class="btn btn-ghost">Browse by category</a>
+      </div>
+      <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          tools.map((tool) => (
+            <ToolCard slug={tool.slug} title={tool.title} tagline={tool.tagline} />
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="container-page py-16 sm:py-20">
+    <span class="eyebrow text-ink-3">How it works</span>
+    <h2 class="mt-3 max-w-xl text-3xl font-extrabold sm:text-4xl">
+      Three steps, zero servers involved
+    </h2>
+    <div class="mt-10 grid gap-6 md:grid-cols-3">
+      {
+        steps.map((step, index) => (
+          <div class="border-t-2 border-ink pt-5">
+            <span class="font-mono text-sm font-bold text-ink-3">
+              0{index + 1}
+            </span>
+            <h3 class="mt-1 text-xl font-bold">{step.heading}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-ink-2">{step.body}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- Use cases -->
+  <section class="container-page pb-16 sm:pb-20">
+    <div class="grid gap-5 md:grid-cols-3">
+      {
+        useCases.map((useCase) => (
+          <a href={`/use-cases/${useCase.slug}/`} class="card block p-6">
+            <span class="eyebrow text-ink-3">Use case</span>
+            <h3 class="mt-2 text-lg font-bold">{useCase.title}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-ink-2">{useCase.lede}</p>
+            <span class="mt-4 inline-flex items-center gap-1 text-sm font-semibold">
+              Read the workflow <span aria-hidden="true">→</span>
+            </span>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- Privacy band -->
+  <section class="hero-grid bg-deep py-16 text-paper sm:py-20">
+    <div class="container-page grid items-start gap-10 lg:grid-cols-2">
+      <div>
+        <span class="eyebrow text-signal">Privacy is the product</span>
+        <h2 class="mt-3 text-3xl font-extrabold sm:text-4xl">
+          Your text never leaves this tab.
+        </h2>
+        <p class="mt-4 max-w-xl leading-relaxed text-paper/75">
+          Every tool is plain HTML, CSS and JavaScript served as static files.
+          There is no upload endpoint, no account system, no analytics script
+          and no database. Close the tab and your data is gone.
+        </p>
+        <a href="/privacy/" class="btn btn-dark-ghost mt-6">Read the privacy details</a>
+      </div>
+      <ul class="space-y-3">
+        <li class="rounded-lg border border-deep-3 bg-deep-2 p-4">
+          <strong class="text-signal">No upload, ever.</strong>
+          <span class="text-paper/70"> — there is no server code to upload to.</span>
+        </li>
+        <li class="rounded-lg border border-deep-3 bg-deep-2 p-4">
+          <strong class="text-signal">No accounts.</strong>
+          <span class="text-paper/70"> — nothing to sign into, nothing to breach.</span>
+        </li>
+        <li class="rounded-lg border border-deep-3 bg-deep-2 p-4">
+          <strong class="text-signal">No tracking.</strong>
+          <span class="text-paper/70"> — zero cookies, zero third-party requests on tool pages.</span>
+        </li>
+        <li class="rounded-lg border border-deep-3 bg-deep-2 p-4">
+          <strong class="text-signal">Preferences only.</strong>
+          <span class="text-paper/70"> — we store your option settings locally, never your text.</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Guides -->
+  <section class="container-page py-16 sm:py-20">
+    <span class="eyebrow text-ink-3">Guides</span>
+    <h2 class="mt-3 text-3xl font-extrabold sm:text-4xl">Do it properly</h2>
+    <div class="mt-8 grid gap-5 md:grid-cols-2">
+      {
+        guides.map((guide) => (
+          <a href={`/guides/${guide.slug}/`} class="card block p-6">
+            <h3 class="text-lg font-bold">{guide.title}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-ink-2">{guide.lede}</p>
+            <span class="mt-4 inline-flex items-center gap-1 text-sm font-semibold">
+              Read the guide <span aria-hidden="true">→</span>
+            </span>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="container-page pb-16 sm:pb-20">
+    <div class="max-w-3xl">
+      <h2 class="text-3xl font-extrabold sm:text-4xl">Frequently asked questions</h2>
+      <div class="prose-page mt-6">
+        {
+          homeFaqs.map((item) => (
+            <div class="mb-6">
+              <h3>{item.q}</h3>
+              <p>{item.a}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="container-page pb-20">
+    <div class="card flex flex-col items-start gap-5 bg-ink p-8 text-paper sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <h2 class="text-2xl font-extrabold">Start with the tool people use most</h2>
+        <p class="mt-1 text-paper/70">
+          {defaultTool.title} — paste a messy list, get a clean one back.
+        </p>
+      </div>
+      <a href="/tools/remove-duplicate-lines/" class="btn btn-signal">
+        Open it now →
+      </a>
+    </div>
+  </section>
+
+  <script>
+    import '../scripts/home-demo.ts';
+  </script>
+</Base>

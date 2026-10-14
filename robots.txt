@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://scrubkit.workers.dev/sitemap-index.xml

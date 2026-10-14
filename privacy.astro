@@ -1,0 +1,79 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+
+const description =
+  'How ScrubKit handles your data: everything runs in your browser, nothing is uploaded, there are no accounts, cookies or trackers.';
+---
+
+<Base title="Privacy — Nothing You Paste Leaves Your Browser | ScrubKit" description={description}>
+  <div class="container-page pt-8">
+    <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Privacy' }]} />
+
+    <header class="mt-6 max-w-3xl">
+      <span class="eyebrow text-ink-3">Privacy</span>
+      <h1 class="mt-3 text-4xl font-extrabold sm:text-5xl">
+        Nothing you paste leaves your browser.
+      </h1>
+      <p class="mt-3 text-lg text-ink-2">
+        This page is the boring, specific version of that promise.
+      </p>
+    </header>
+
+    <div class="prose-page mt-10 max-w-3xl">
+      <h2>What happens to your text</h2>
+      <p>
+        ScrubKit is a static website: HTML, CSS and JavaScript files served from
+        a CDN. When you paste text into a tool, the transformation runs as
+        JavaScript inside your browser tab. There is no upload request, no API
+        call and no server-side processing — the code that cleans your text is
+        the same code that draws the page.
+      </p>
+      <p>
+        When you close the tab, whatever you pasted is gone. We do not keep a
+        copy because no copy was ever made outside your device.
+      </p>
+
+      <h2>What we store</h2>
+      <p>
+        Tool <strong>options</strong> (for example “case-sensitive comparison”
+        or your preferred slug separator) are saved in your browser's
+        localStorage so the tool behaves the way you left it on your next visit.
+        That preference storage lives on your device and can be cleared at any
+        time from your browser settings. <strong>Your pasted text is never
+        written to localStorage</strong>, cookies, IndexedDB or anywhere else.
+      </p>
+
+      <h2>Cookies and tracking</h2>
+      <p>
+        There are no cookies. There are no analytics scripts, no session
+        recorders, no advertising networks and no third-party requests on tool
+        pages. If you open your browser's network panel while using a tool,
+        you'll see the page load and nothing else.
+      </p>
+
+      <h2>Accounts</h2>
+      <p>
+        There are none. No signup, no login, no email collection, no password
+        database — because there is no backend to hold one.
+      </p>
+
+      <h2>Hosting and server logs</h2>
+      <p>
+        The site's files are served by our static host, which keeps standard
+        technical access logs (IP address, user agent, requested path, time)
+        for security and abuse prevention, as almost every web host does. Those
+        logs contain the URLs requested — never the content of your pasted
+        text, which is never transmitted in the first place.
+      </p>
+
+      <h2>Changes to this policy</h2>
+      <p>
+        If any part of this ever changes — for example, if a future feature
+        genuinely needs a server — it will be stated here in plain language
+        before that feature exists, and it will be opt-in. The core promise
+        (“nothing you paste is uploaded”) is the product; it is not for sale.
+      </p>
+    </div>
+  </div>
+</Base>

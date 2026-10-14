@@ -1,0 +1,128 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import ToolShell from '../../components/ToolShell.astro';
+import ToolCard from '../../components/ToolCard.astro';
+import { tools, getTool, defaultOptionsFor } from '../../lib/registry';
+import { categories } from '../../data/site';
+import type { ToolDefinition } from '../../lib/types';
+
+export function getStaticPaths() {
+  return tools.map((tool) => ({ params: { slug: tool.slug }, props: { tool } }));
+}
+
+interface Props {
+  tool: ToolDefinition;
+}
+
+const { tool } = Astro.props;
+const category = categories.find((entry) => entry.slug === tool.category);
+const relatedTools = tool.related
+  .map((slug) => getTool(slug))
+  .filter((entry): entry is ToolDefinition => Boolean(entry));
+
+const description = `${tool.tagline} ${tool.intro[0]}`.slice(0, 155).trim();
+
+let exampleOutput = '';
+try {
+  const options = { ...defaultOptionsFor(tool), ...(tool.exampleOptions ?? {}) };
+  exampleOutput = tool.run(tool.exampleInput, options, tool.exampleInput2).output;
+} catch {
+  exampleOutput = '';
+}
+---
+
+<Base title={`${tool.title} Online – Free, Private, No Signup`} description={description} ogType="website">
+  <div class="container-page pt-8">
+    <Breadcrumb
+      items={[
+        { label: 'Home', href: '/' },
+        ...(category ? [{ label: category.name, href: `/categories/${category.slug}/` }] : []),
+        { label: tool.title },
+      ]}
+    />
+
+    <header class="mt-6 max-w-3xl">
+      <div class="flex flex-wrap gap-2">
+        <span class="chip">{category?.name ?? 'Tool'}</span>
+        <span class="chip">100% in-browser</span>
+        <span class="chip">No signup</span>
+      </div>
+      <h1 class="mt-4 text-4xl font-extrabold sm:text-5xl">{tool.title}</h1>
+      <p class="mt-3 text-lg text-ink-2">{tool.tagline}</p>
+    </header>
+  </div>
+
+  <section class="container-page mt-8" aria-label={`${tool.title} tool`}>
+    <ToolShell tool={tool} />
+  </section>
+
+  <div class="container-page mt-14 grid gap-12 lg:grid-cols-3">
+    <div class="lg:col-span-2 prose-page">
+      <h2>How to use it</h2>
+      <ol>
+        {tool.howTo.map((step) => <li>{step}</li>)}
+      </ol>
+
+      <h2>Options explained</h2>
+      <dl class="space-y-4">
+        {
+          tool.optionsDoc.map((entry) => (
+            <div>
+              <dt class="font-bold text-ink">{entry.name}</dt>
+              <dd class="text-ink-2">{entry.description}</dd>
+            </div>
+          ))
+        }
+      </dl>
+
+      <h2>Worked example</h2>
+      <div class="grid gap-4 sm:grid-cols-2">
+        <div>
+          <p class="field-label">Input</p>
+          <pre class="overflow-x-auto rounded-lg border border-line bg-white p-3 text-xs leading-relaxed">{tool.exampleInput}{tool.exampleInput2 ? `\n--- second ---\n${tool.exampleInput2}` : ''}</pre>
+        </div>
+        <div>
+          <p class="field-label">Output</p>
+          <pre class="overflow-x-auto rounded-lg border border-line bg-white p-3 text-xs leading-relaxed">{exampleOutput}</pre>
+        </div>
+      </div>
+
+      <h2>Frequently asked questions</h2>
+      {
+        tool.faq.map((item) => (
+          <div class="mb-5">
+            <h3>{item.q}</h3>
+            <p>{item.a}</p>
+          </div>
+        ))
+      }
+    </div>
+
+    <aside>
+      <h2 class="text-xs font-bold uppercase tracking-widest text-ink-3">Related tools</h2>
+      <div class="mt-4 space-y-4">
+        {
+          relatedTools.map((related) => (
+            <ToolCard
+              slug={related.slug}
+              title={related.title}
+              tagline={related.tagline}
+            />
+          ))
+        }
+      </div>
+      <div class="mt-6 rounded-lg border border-line bg-white p-4 text-sm">
+        <p class="font-semibold">More in {category?.name}</p>
+        <p class="mt-1 text-ink-2">
+          Browse the <a class="font-semibold underline decoration-signal-2 decoration-2 underline-offset-4" href={`/categories/${category?.slug}/`}>{category?.name} hub</a>
+          for every tool in this group.
+        </p>
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    import '../../scripts/tool-shell.ts';
+  </script>
+</Base>

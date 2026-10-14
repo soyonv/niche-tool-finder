@@ -1,0 +1,146 @@
+---
+import type { ToolDefinition } from '../lib/types';
+
+interface Props {
+  tool: ToolDefinition;
+}
+
+const { tool } = Astro.props;
+const examplePayload = JSON.stringify({
+  input: tool.exampleInput,
+  input2: tool.exampleInput2 ?? '',
+  options: tool.exampleOptions ?? {},
+});
+---
+
+<div
+  class="card overflow-hidden"
+  data-tool-root
+  data-tool-slug={tool.slug}
+  data-tool-dual={tool.dual ? 'true' : 'false'}
+  data-tool-example={examplePayload}
+>
+  <div class="grid divide-y divide-line lg:grid-cols-2 lg:divide-x lg:divide-y-0">
+    <!-- Input side -->
+    <div class="p-4 sm:p-6">
+      <div class="flex items-center justify-between gap-3">
+        <label for="tool-input" class="field-label mb-0">Paste your text</label>
+        <span class="text-xs text-ink-3">one item per line</span>
+      </div>
+      <textarea
+        id="tool-input"
+        class="text-area mt-2"
+        spellcheck="false"
+        autocomplete="off"
+        placeholder="Paste anything here — it never leaves your browser"></textarea>
+      <div id="tool-input-stat" class="mt-2 font-mono text-xs text-ink-3" aria-hidden="true"></div>
+
+      {
+        tool.dual && (
+          <div class="mt-5">
+            <label for="tool-input-2" class="field-label">
+              {tool.secondInputLabel ?? 'Second text'}
+            </label>
+            <textarea
+              id="tool-input-2"
+              class="text-area mt-2"
+              spellcheck="false"
+              autocomplete="off"
+              placeholder="Paste the second version here"
+            />
+          </div>
+        )
+      }
+
+      <fieldset class="mt-6">
+        <legend class="field-label">Options</legend>
+        <div class="grid gap-3 sm:grid-cols-2">
+          {
+            tool.options.map((option) =>
+              option.type === 'checkbox' ? (
+                <label class="flex cursor-pointer items-start gap-2.5 rounded-lg border border-line bg-white p-3 text-sm">
+                  <input
+                    type="checkbox"
+                    data-option-key={option.key}
+                    checked={option.default ?? false}
+                    class="mt-0.5 size-4 accent-ink"
+                  />
+                  <span>
+                    <span class="font-medium">{option.label}</span>
+                    {option.help && (
+                      <span class="mt-0.5 block text-xs text-ink-3">{option.help}</span>
+                    )}
+                  </span>
+                </label>
+              ) : option.type === 'select' ? (
+                <label class="block text-sm">
+                  <span class="mb-1 block font-medium">{option.label}</span>
+                  <select
+                    data-option-key={option.key}
+                    data-default={option.default}
+                    class="text-field"
+                  >
+                    {option.choices.map((choice) => (
+                      <option value={choice.value} selected={choice.value === option.default}>
+                        {choice.label}
+                      </option>
+                    ))}
+                  </select>
+                  {option.help && <span class="mt-1 block text-xs text-ink-3">{option.help}</span>}
+                </label>
+              ) : (
+                <label class="block text-sm">
+                  <span class="mb-1 block font-medium">{option.label}</span>
+                  <input
+                    type="text"
+                    data-option-key={option.key}
+                    data-default={option.default ?? ''}
+                    value={option.default ?? ''}
+                    placeholder={option.placeholder ?? ''}
+                    class="text-field"
+                    autocomplete="off"
+                    spellcheck="false"
+                  />
+                  {option.help && <span class="mt-1 block text-xs text-ink-3">{option.help}</span>}
+                </label>
+              ),
+            )
+          }
+        </div>
+      </fieldset>
+    </div>
+
+    <!-- Output side -->
+    <div class="bg-paper-2 p-4 sm:p-6">
+      <div class="flex items-center justify-between gap-3">
+        <label for="tool-output" class="field-label mb-0">Output</label>
+        <span id="tool-output-stat" class="font-mono text-xs text-ink-3" aria-hidden="true"></span>
+      </div>
+      <textarea
+        id="tool-output"
+        class="text-area mt-2 bg-white"
+        readonly
+        spellcheck="false"
+        aria-live="polite"
+        placeholder="The cleaned result appears here"></textarea>
+
+      <p id="tool-summary" role="status" aria-live="polite" class="mt-3 min-h-5 text-sm font-semibold">
+        Ready when you are.
+      </p>
+      <p id="tool-detail" class="font-mono text-xs text-brick" hidden></p>
+
+      <div class="mt-4 flex flex-wrap gap-2">
+        <button type="button" class="btn btn-signal" data-action="copy">Copy</button>
+        <button type="button" class="btn btn-ghost" data-action="download">Download</button>
+        <button type="button" class="btn btn-ghost" data-action="example">Try example</button>
+        <button type="button" class="btn btn-ghost" data-action="undo">Undo</button>
+        <button type="button" class="btn btn-ghost" data-action="clear">Clear</button>
+      </div>
+
+      <p class="mt-5 rounded-lg border border-line bg-white p-3 text-xs leading-relaxed text-ink-2">
+        <strong>Runs in your browser.</strong> Nothing you paste is uploaded,
+        stored or logged — no account, no server, no limits.
+      </p>
+    </div>
+  </div>
+</div>
